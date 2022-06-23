@@ -8,7 +8,6 @@ const getAll = (pagination) => {
 
 const getUser = (user) => {
   return axios.get(`/users/${user}`).catch((err) => {
-    console.log("erro api", err);
     return err;
   });
 };
