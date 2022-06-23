@@ -31,3 +31,14 @@ span {
 .c-grey {
   color: rgb(74, 74, 74);
 }
+
+.defaultBg {
+  background-color: #fafafa !important;
+}
+.link {
+  text-decoration: none;
+  color: rgb(74, 74, 74) !important;
+}
+.link:hover {
+  color: rgb(47, 87, 168) !important;
+}

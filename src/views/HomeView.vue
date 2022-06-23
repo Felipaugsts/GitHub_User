@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container id="container">
+    <v-container class="defaultBg" id="container">
       <v-layout wrap class="mt-8 d-flex justify-center">
         <v-flex md12 sm12 lg9 class="pr-6 pl-6 d-flex">
           <TextField inner="mdi-magnify" :fields="searchField" />
@@ -13,12 +13,18 @@
           />
         </v-flex>
 
-        <v-flex xs12 class="pl-6 d-flex justify-center align-center">
+        <!--  ANCHOR: - Page texts States -->
+
+        <v-flex xs12 class="pl-6 d-flex justify-center align-center transition">
           <p class="font-small c-grey" v-if="!isFiltering && !error">
-            Most popular account on github
+            Most popular account on GitHub -
+            <span class="semibold"
+              >({{ pagination.perPage * pagination.currentPage }} out of
+              {{ pagination.totalUsers }})
+            </span>
           </p>
           <p class="font-small c-grey" v-else-if="isFiltering && !error">
-            Results of search ( {{ searchField.text }} )
+            Results of search ( {{ filterUserName }} )
           </p>
 
           <p class="font-large red--text bold c-grey" v-else-if="error">
@@ -29,32 +35,36 @@
           </p>
         </v-flex>
 
-        <!-- Looping over all users -->
+        <!--  ANCHOR: - Looping over all users -->
 
-        <v-layout wrap v-if="!isFiltering & !error">
+        <v-layout wrap v-if="!isFiltering & !error && allUsers != null">
           <v-flex
             lg4
             class="pa-4"
             v-for="(user, index) in allUsers"
             :key="index"
           >
-            <userCard :gitUser="user" />
+            <User :gitUser="user" />
+          </v-flex>
+
+          <v-flex sm12>
+            <Paginate :paginateData="pagination" @paginate="getAllUsers" />
           </v-flex>
         </v-layout>
 
-        <!-- Filtered results -->
+        <!--  ANCHOR: - Filtered results -->
 
         <v-flex lg4 v-else-if="!error">
-          <userCard
+          <User
             :gitUser="filteredUser"
             :isFiltering="isFiltering"
             @reset="resetFilters"
           />
         </v-flex>
 
-        <!-- Rendering error -->
+        <!-- ANCHOR: Rendering error -->
 
-        <v-flex v-else-if="error">
+        <v-flex v-else-if="error" class="white">
           <v-img class="error-image" src="../assets/images/error.gif" />
         </v-flex>
       </v-layout>
@@ -63,20 +73,14 @@
 </template>
 <script>
 import { getAll, getUser } from "../data/api";
-import userCard from "@/components/Card/User.vue";
-import Button from "@/components/Buttons/Button.vue";
 export default {
   name: "home-view",
-  components: {
-    userCard,
-    Button,
-  },
   data() {
     return {
-      allUsers: [],
-      currentPage: 4,
+      allUsers: null,
 
       isFiltering: false,
+      filterUserName: "",
       filteredUser: [],
 
       searchField: {
@@ -86,25 +90,32 @@ export default {
 
       loading: false,
       error: false,
+
+      pagination: {
+        currentPage: 1,
+        totalUsers: 100,
+        perPage: 20,
+      },
     };
   },
+
   methods: {
     getAllUsers() {
-      getAll(this.currentPage).then((res) => {
-        console.log(res);
+      getAll(this.pagination).then((res) => {
         let users = res.data.items;
         this.allUsers = users;
+        this.loading = false;
+        window.scrollTo(0, 0);
       });
     },
 
-    async startFiltering() {
+    startFiltering() {
       let username = this.searchField.text;
       if (username != "") {
         this.loading = true;
 
         getUser(username).then((res) => {
           if (res.status == 200) {
-            this.error = false;
             this.setFilters(res.data);
           } else {
             this.handleError();
@@ -113,15 +124,16 @@ export default {
       }
     },
 
-    // HANDLE USER FILTERS
+    // ANCHOR: HANDLE USER FILTERS
 
     handleError() {
       this.loading = false;
       this.error = true;
-      console.log("handle error");
     },
 
     setFilters(user) {
+      this.filterUserName = user;
+      this.error = false;
       this.filteredUser = user;
       this.isFiltering = true;
       this.loading = false;
@@ -132,27 +144,13 @@ export default {
       this.searchField.text = null;
       this.filteredUser = null;
       this.error = false;
+      this.filterUserName = null;
     },
   },
 
   mounted() {
+    this.loading = true;
     this.getAllUsers();
   },
 };
 </script>
-
-<style scoped>
-#container {
-  width: 1200px;
-}
-@media only screen and (max-width: 1200px) {
-  #container {
-    width: 90%;
-  }
-}
-
-.error-image {
-  width: 600px;
-  margin: auto;
-}
-</style>

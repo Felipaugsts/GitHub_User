@@ -1,10 +1,16 @@
 <template>
-  <v-card class="pa-6 card" outlined>
+  <v-card class="pa-6 shadow transition" outlined>
     <div class="d-flex justify-start align-center">
       <v-avatar size="100">
         <img :src="gitUser.avatar_url" alt="John" />
       </v-avatar>
-      <p class="font-large ml-4 semibold c-grey">@{{ gitUser.login }}</p>
+      <a
+        class="font-large ml-4 semibold c-grey userName pointer link"
+        target="blank"
+        :href="openUserProfile()"
+      >
+        @{{ gitUser.login }}
+      </a>
     </div>
     <v-btn @click="resetFilters" class="close-btn" icon v-if="isFiltering"
       ><v-icon color="red">mdi-close</v-icon></v-btn
@@ -33,13 +39,8 @@ export default {
   right: 5px;
   top: 5px;
 }
-.card {
-  cursor: pointer;
-  transition: all 0.5s ease !important;
-}
-.card:hover {
-  -webkit-box-shadow: 0px 5px 7px -1px rgba(227, 227, 227, 1);
-  -moz-box-shadow: 0px 5px 7px -1px rgba(227, 227, 227, 1);
-  box-shadow: 0px 5px 7px -1px rgba(227, 227, 227, 1);
+.userName {
+  max-width: 200px;
+  word-wrap: break-word;
 }
 </style>

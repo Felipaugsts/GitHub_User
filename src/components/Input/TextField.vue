@@ -17,7 +17,6 @@ export default {
   name: "TextField",
   props: [
     "fields",
-    "model",
     "disabled",
     "width",
     "label",
@@ -28,7 +27,6 @@ export default {
   data() {
     return {
       field: this.fields,
-      models: this.model,
     };
   },
   created() {

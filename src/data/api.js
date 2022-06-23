@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const getAll = (page) => {
+const getAll = (pagination) => {
   return axios.get(
-    `search/users?q=repos:followers:%3E2000&language:javascript&page=${page}&per_page=20`
+    `search/users?q=repos:followers:%3E2000&language:javascript&page=${pagination.currentPage}&per_page=${pagination.perPage}`
   );
 };
 
