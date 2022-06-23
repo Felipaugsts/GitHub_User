@@ -40,6 +40,9 @@
         <v-layout wrap v-if="!isFiltering & !error && allUsers != null">
           <v-flex
             lg4
+            md6
+            sm6
+            xs12
             class="pa-4"
             v-for="(user, index) in allUsers"
             :key="index"
