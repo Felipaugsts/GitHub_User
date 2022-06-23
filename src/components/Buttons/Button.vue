@@ -1,10 +1,9 @@
 <template>
   <v-btn
     :loading="loading"
-    @click="this.$emit('click')"
+    @click="emitEvent()"
     id="button-txt"
     :class="type"
-    :width="width"
     tile
   >
     {{ label }}
@@ -13,7 +12,14 @@
 
 <script>
 export default {
-  props: ["label", "type", "width", "loading"],
+  props: ["label", "type", "loading"],
+
+  methods: {
+    emitEvent() {
+      console.log("click");
+      this.$emit("click");
+    },
+  },
 };
 </script>
 
@@ -31,12 +37,15 @@ export default {
 #button-txt {
   font-family: "Montserrat", sans-serif;
   font-family: Montserrat;
-  font-size: 14px;
+  font-size: 18px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 900;
   line-height: 17px;
   letter-spacing: 0em;
   text-align: left;
   text-transform: none !important;
+  height: 55px;
+  border-radius: 4px;
+  width: 90px;
 }
 </style>

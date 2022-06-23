@@ -1,8 +1,8 @@
 <template>
   <v-text-field
     class="field"
-    v-model="field"
-    :label="label"
+    v-model="field.text"
+    :label="field.label"
     :placeholder="placeholder"
     :type="type"
     outlined
