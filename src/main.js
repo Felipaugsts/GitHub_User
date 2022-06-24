@@ -6,8 +6,8 @@ import vuetify from "./plugins/vuetify";
 import "@/components/Global";
 import axios from "axios";
 
+axios.defaults.baseURL = process.env.VUE_APP_API;
 Vue.config.productionTip = false;
-axios.defaults.baseURL = "https://api.github.com";
 
 new Vue({
   router,

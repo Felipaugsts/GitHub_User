@@ -4,17 +4,23 @@
       <v-avatar size="100">
         <img :src="gitUser.avatar_url" alt="John" />
       </v-avatar>
-      <a
-        class="font-large ml-4 semibold c-grey userName pointer link"
-        target="blank"
-        :href="openUserProfile()"
-      >
-        @{{ gitUser.login }}
-      </a>
+
+      <div>
+        <a
+          class="font-large ml-4 semibold c-grey userName pointer link"
+          target="blank"
+          :href="`https://github.com/${this.gitUser.login}`"
+        >
+          @{{ gitUser.login }}
+        </a>
+
+        <p v-if="isFiltering" class="ml-4 mt-4">{{ gitUser.bio }}</p>
+      </div>
     </div>
-    <v-btn @click="resetFilters" class="close-btn" icon v-if="isFiltering"
-      ><v-icon color="red">mdi-close</v-icon></v-btn
-    >
+
+    <v-btn @click="resetFilters" class="close-btn" icon v-if="isFiltering">
+      <v-icon color="red"> mdi-close </v-icon>
+    </v-btn>
   </v-card>
 </template>
 <script>
@@ -22,10 +28,6 @@ export default {
   props: ["gitUser", "isFiltering"],
 
   methods: {
-    openUserProfile() {
-      return `https://github.com/${this.gitUser.login}`;
-    },
-
     resetFilters() {
       this.$emit("reset");
     },

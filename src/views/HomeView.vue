@@ -10,12 +10,14 @@
             class="ml-3"
             @click="startFiltering()"
             :loading="loading"
+            :disabled="searchField.text == '' ? true : false"
           />
         </v-flex>
 
         <!--  ANCHOR: - Page texts States -->
 
         <v-flex xs12 class="pl-6 d-flex justify-center align-center transition">
+          <!-- Default text -->
           <p class="font-small c-grey" v-if="!isFiltering && !error">
             Most popular account on GitHub -
             <span class="semibold"
@@ -23,15 +25,18 @@
               {{ pagination.totalUsers }})
             </span>
           </p>
+
+          <!-- Text shown when filtering an user -->
           <p class="font-small c-grey" v-else-if="isFiltering && !error">
             Results of search ( {{ filterUserName }} )
           </p>
 
+          <!-- Text shown when something goes wrong -->
           <p class="font-large red--text bold c-grey" v-else-if="error">
             Something went wrong, try again!!!
-            <v-btn @click="resetFilters" icon outlined color="red" class="ml-4"
-              ><v-icon color="b">mdi-close</v-icon></v-btn
-            >
+            <v-btn @click="resetFilters" icon outlined color="red" class="ml-4">
+              <v-icon color="b">mdi-close</v-icon>
+            </v-btn>
           </p>
         </v-flex>
 
@@ -51,7 +56,11 @@
           </v-flex>
 
           <v-flex sm12>
-            <Paginate :paginateData="pagination" @paginate="getAllUsers" />
+            <Paginate
+              class="pt-4 pb-8"
+              :paginateData="pagination"
+              @paginate="getUserList"
+            />
           </v-flex>
         </v-layout>
 
@@ -103,43 +112,38 @@ export default {
   },
 
   methods: {
-    getAllUsers() {
+    getUserList() {
+      this.loading = true;
       getAll(this.pagination).then((res) => {
-        let users = res.data.items;
-        this.allUsers = users;
+        this.allUsers = res.data.items;
         this.loading = false;
         window.scrollTo(0, 0);
       });
     },
 
     startFiltering() {
-      let username = this.searchField.text;
-      if (username != "") {
-        this.loading = true;
-
-        getUser(username).then((res) => {
-          if (res.status == 200) {
-            this.setFilters(res.data);
-          } else {
-            this.handleError();
-          }
-        });
-      }
+      this.loading = true;
+      getUser(this.searchField.text).then((res) => {
+        if (res.status == 200) {
+          this.setFilters(res.data);
+        } else {
+          this.handleError();
+        }
+        this.loading = false;
+      });
     },
 
     // ANCHOR: HANDLE USER FILTERS
 
     handleError() {
-      this.loading = false;
       this.error = true;
     },
 
     setFilters(user) {
-      this.filterUserName = user;
+      this.filterUserName = user.login;
       this.error = false;
       this.filteredUser = user;
       this.isFiltering = true;
-      this.loading = false;
     },
 
     resetFilters() {
@@ -152,8 +156,7 @@ export default {
   },
 
   mounted() {
-    this.loading = true;
-    this.getAllUsers();
+    this.getUserList();
   },
 };
 </script>

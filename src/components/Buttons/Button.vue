@@ -4,6 +4,7 @@
     @click="emitEvent()"
     id="button-txt"
     :class="type"
+    :disabled="disabled"
     tile
   >
     {{ label }}
@@ -12,7 +13,7 @@
 
 <script>
 export default {
-  props: ["label", "type", "loading"],
+  props: ["label", "type", "loading", "disabled"],
 
   methods: {
     emitEvent() {
