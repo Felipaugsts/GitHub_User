@@ -29,8 +29,5 @@ export default {
       field: this.fields,
     };
   },
-  created() {
-    this.$emit("fields", this.field);
-  },
 };
 </script>

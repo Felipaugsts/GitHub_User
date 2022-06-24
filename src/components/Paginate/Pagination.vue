@@ -21,8 +21,5 @@ export default {
       this.$emit("paginate");
     },
   },
-  created() {
-    this.$emit("paginateData", this.field);
-  },
 };
 </script>
